@@ -1,5 +1,6 @@
 #include "engine.h"
-#include "common\utility.h"
+#include "shader.h"
+
 
 Engine::Engine(int a_width, int a_height, const char* a_windowName)
 {
@@ -82,6 +83,8 @@ int Engine::Initialize()
 
     this->SetupOpenGlRendering();
 
+    this->SetupRenderingData();
+
     // Start game loop.
     while(!glfwWindowShouldClose(this->window))
     {
@@ -112,6 +115,16 @@ int Engine::Initialize()
         glfwSwapBuffers(this->window);
     }
 
+
+
+
+    glUseProgram(0);
+    glBindVertexArray(0);
+
+
+    Utility::GetInstance()->ReadyToShutdown_SingleTriangle();
+
+
     glfwTerminate();
 
     return 1;
@@ -135,6 +148,7 @@ void Engine::ProcessInput(GLFWwindow* a_window)
 
 void Engine::SetupOpenGlRendering()
 {
+    return;
     // TODO: Setup OpenGL code here...
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
@@ -144,6 +158,13 @@ void Engine::SetupOpenGlRendering()
 
 }
 
+void Engine::SetupRenderingData () {
+    Utility* _utility = Utility::GetInstance();
+
+    _utility->SetupRenderingData_SingleTriangle();
+}
+
+
 void Engine::Update(float a_deltaTime)
 {
     // TODO: Update your logic here...
@@ -152,4 +173,9 @@ void Engine::Update(float a_deltaTime)
 void Engine::Draw()
 {
     // TODO: Render your stuff here...
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+}
+
+void Engine::Shutdown () {
+    
 }

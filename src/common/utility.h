@@ -5,13 +5,21 @@
 
 #include <glad/glad.h>
 
+#include "../shader.h"
+
 
 class Utility
 {
 private:
-    Utility* m_instance;
+    static Utility* m_instance;
 
 public:
+    GLuint triangleVertexPositionBufferObjectId;
+    GLuint triangleVertexColorBufferObjectId;
+    GLuint triangleVertexArrayObject;
+    GLuint triangleShaderProgramId;
+    Shader* triangleShaderProgram;
+
     float triangle_position[9] = {
         0.0f, 0.5f, 0.0f,
         -0.5f, -0.5f, 0.0f,
@@ -29,7 +37,10 @@ private:
 
 public:
     ~Utility();
-    Utility* GetInstance ();
 
+    void SetupRenderingData_SingleTriangle();
+    void ReadyToShutdown_SingleTriangle();
+
+    static Utility* GetInstance ();
     static std::string ReadStringFromFile (char* filePath);
 };

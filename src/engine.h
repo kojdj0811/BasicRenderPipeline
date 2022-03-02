@@ -1,3 +1,5 @@
+#pragma one
+
 // System libs.
 #include <iostream>
 
@@ -9,6 +11,7 @@
 
 // Header includes.
 // TODO: Include your headers here...
+#include "common/utility.h"
 
 // Function prototypes.
 void WindowResize(GLFWwindow* a_window, int a_width, int a_height);
@@ -32,7 +35,7 @@ private:
 
     // Game loop.
     float lastFrameTime = 0.0f;
-    glm::vec3 clearColor = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 clearColor = glm::vec3(0.2f, 0.3f, 0.3f);
     float lastFpsTime = 0.0f;
 
 public:
@@ -40,10 +43,14 @@ public:
 
     void Update(float a_deltaTime);
     void Draw();
+    void Shutdown();
 
     void ProcessInput(GLFWwindow* a_window);
 
 private:
     // OpenGL
     void SetupOpenGlRendering();
+
+private:
+    void SetupRenderingData();
 };

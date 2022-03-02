@@ -3,6 +3,7 @@
 int main()
 {
     Engine engine(640, 480, "OpenGL Rendering Project");
+    Utility::GetInstance();
 
     if(!engine.Initialize())
     {
