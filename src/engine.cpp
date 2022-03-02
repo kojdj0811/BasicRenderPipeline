@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "common\utility.h"
 
 Engine::Engine(int a_width, int a_height, const char* a_windowName)
 {
@@ -7,8 +8,14 @@ Engine::Engine(int a_width, int a_height, const char* a_windowName)
     this->windowName = a_windowName;
 }
 
+void Engine::errorCallback (int errorCode, const char* errorDescription) {
+    fprintf(stderr, "Error(%d): %s\n", errorCode, errorDescription);
+}
+
 int Engine::Initialize()
 {
+    glfwSetErrorCallback(errorCallback);
+
     // Initialize GLFW.
     glfwInit();
 
@@ -18,10 +25,15 @@ int Engine::Initialize()
 
     // Tell GLFW that we want to use the OpenGL's core profile.
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
     // Do this for mac compatability.
-    // glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+
+    //anti aliasing
+    glfwWindowHint(GLFW_SAMPLES, 4);
+
+    glfwSwapInterval(1);
 
     // Create Window.
 
@@ -51,8 +63,16 @@ int Engine::Initialize()
         return 0;
     }
 
-    // Set the viewport
 
+    // error
+    std::cout << "OpenGL version" << glGetString(GL_VERSION) << std::endl;
+    std::cout << "GLSL version" << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+    std::cout << "Vender" << glGetString(GL_VENDOR) << std::endl;
+    std::cout << "Renderer" << glGetString(GL_RENDERER) << std::endl;
+
+
+
+    // Set the viewport
     glViewport(0, 0, this->screenWidth, this->screenHeight);
 
     // Setup callbacks.
@@ -69,6 +89,15 @@ int Engine::Initialize()
         float m_frameTime = (float)glfwGetTime();
         float m_deltaTime = m_frameTime - this->lastFrameTime;
         this->lastFrameTime = m_frameTime;
+
+
+        fps++;
+        if(m_frameTime - lastFpsTime >= 1.0f) {
+            printf("%f ms/frame %d fps\n", 1000.0/fps, fps);
+            fps = 0;
+            lastFpsTime = m_frameTime;
+        }
+
 
         glfwPollEvents();
         this->ProcessInput(this->window);
@@ -91,7 +120,7 @@ int Engine::Initialize()
 void WindowResize(GLFWwindow* a_window, int a_width, int a_height)
 {
     glViewport(0, 0, a_width, a_height);
-
+    std::cout << "WindowResized :: " << a_width << ", " << a_height << std::endl;
     // TODO: Do your resize logic here...
 }
 
@@ -107,6 +136,12 @@ void Engine::ProcessInput(GLFWwindow* a_window)
 void Engine::SetupOpenGlRendering()
 {
     // TODO: Setup OpenGL code here...
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+    glFrontFace(GL_CCW);
+    glPolygonMode(GL_FRONT, GL_FILL);
+    glPolygonMode(GL_BACK, GL_LINE);
+
 }
 
 void Engine::Update(float a_deltaTime)

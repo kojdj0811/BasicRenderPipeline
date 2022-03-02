@@ -18,7 +18,9 @@ class Engine
 {
 public:
     int Initialize();
+    static void errorCallback (int errorCode, const char* errorDescription);
     float gameSpeed = 0.1f;
+    int fps = 0;
 
 private:
     int screenWidth = 800;
@@ -31,6 +33,7 @@ private:
     // Game loop.
     float lastFrameTime = 0.0f;
     glm::vec3 clearColor = glm::vec3(0.0f, 0.0f, 0.0f);
+    float lastFpsTime = 0.0f;
 
 public:
     Engine(int a_width, int a_height, const char* a_windowName);

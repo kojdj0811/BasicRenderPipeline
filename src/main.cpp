@@ -2,7 +2,7 @@
 
 int main()
 {
-    Engine engine(640, 480, "OpenGL preset by Guylian Gilsing");
+    Engine engine(640, 480, "OpenGL Rendering Project");
 
     if(!engine.Initialize())
     {
@@ -10,4 +10,3 @@ int main()
         std::cin.get();
     }
 }
-

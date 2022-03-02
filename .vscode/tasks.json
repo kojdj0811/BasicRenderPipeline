@@ -39,6 +39,7 @@
                     // Include .cpp files here (These are for .h file code)
                     "${workspaceRoot}/src/shader.cpp",
                     "${workspaceRoot}/src/engine.cpp",
+                    "${workspaceRoot}/src/common/utility.cpp",
                     
                     "-g",
                     "--std=c++17",
@@ -57,6 +58,11 @@
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "label" : "Run",
+            "command" : "${workspaceRoot}/builds/windows/${fileBasenameNoExtension}.exe",
+            "group" : "test",
         }
     ]
 }
