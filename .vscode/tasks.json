@@ -39,7 +39,11 @@
                     // Include .cpp files here (These are for .h file code)
                     "${workspaceRoot}/src/shader.cpp",
                     "${workspaceRoot}/src/engine.cpp",
+                    "${workspaceRoot}/src/camera/cameraController.cpp",
                     "${workspaceRoot}/src/common/utility.cpp",
+                    "${workspaceRoot}/src/common/basicRendererEntity.cpp",
+                    "${workspaceRoot}/src/common/singleTriangleRenderer.cpp",
+                    "${workspaceRoot}/src/common/singleQuadRenderer.cpp",
                     
                     "-g",
                     "--std=c++17",

@@ -1,12 +1,19 @@
 #include "engine.h"
-#include "shader.h"
 
+Engine* Engine::m_instance;
 
 Engine::Engine(int a_width, int a_height, const char* a_windowName)
 {
+    if(m_instance != nullptr) return;
     this->screenWidth = a_width;
     this->screenHeight = a_height;
     this->windowName = a_windowName;
+
+    rendererEntity = new SingleQuadRenderer();
+}
+
+Engine* Engine::GetInstance () {
+    return m_instance == nullptr ? nullptr : m_instance;
 }
 
 void Engine::errorCallback (int errorCode, const char* errorDescription) {
@@ -34,7 +41,6 @@ int Engine::Initialize()
     //anti aliasing
     glfwWindowHint(GLFW_SAMPLES, 4);
 
-    glfwSwapInterval(1);
 
     // Create Window.
 
@@ -52,6 +58,7 @@ int Engine::Initialize()
     }
 
     glfwMakeContextCurrent(window);
+    glfwSwapInterval(1);
 
     // Initialize GLAD.
 
@@ -70,6 +77,7 @@ int Engine::Initialize()
     std::cout << "GLSL version" << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
     std::cout << "Vender" << glGetString(GL_VENDOR) << std::endl;
     std::cout << "Renderer" << glGetString(GL_RENDERER) << std::endl;
+    std::cout << std::endl;
 
 
 
@@ -106,7 +114,7 @@ int Engine::Initialize()
         this->ProcessInput(this->window);
 
         glClearColor(this->clearColor.x, this->clearColor.y, this->clearColor.z, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Application logic
         this->Update(m_deltaTime);
@@ -122,7 +130,7 @@ int Engine::Initialize()
     glBindVertexArray(0);
 
 
-    Utility::GetInstance()->ReadyToShutdown_SingleTriangle();
+    rendererEntity->ReadyToShutdown();
 
 
     glfwTerminate();
@@ -159,9 +167,7 @@ void Engine::SetupOpenGlRendering()
 }
 
 void Engine::SetupRenderingData () {
-    Utility* _utility = Utility::GetInstance();
-
-    _utility->SetupRenderingData_SingleTriangle();
+    rendererEntity->SetupRenderingData();
 }
 
 
@@ -173,9 +179,15 @@ void Engine::Update(float a_deltaTime)
 void Engine::Draw()
 {
     // TODO: Render your stuff here...
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    rendererEntity->Draw();
 }
 
 void Engine::Shutdown () {
     
+}
+
+
+
+glm::ivec2 Engine::GetScreenSize() {
+    return glm::ivec2(screenWidth, screenHeight);
 }
