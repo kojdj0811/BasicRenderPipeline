@@ -9,16 +9,27 @@ Engine::Engine(int a_width, int a_height, const char* a_windowName)
     this->screenHeight = a_height;
     this->windowName = a_windowName;
 
-    rendererEntity = new SingleQuadRenderer();
+    mouseInput = new MouseInput();
+
+    m_instance = this;
 }
 
 Engine* Engine::GetInstance () {
-    return m_instance == nullptr ? nullptr : m_instance;
+    return m_instance;
 }
+
 
 void Engine::errorCallback (int errorCode, const char* errorDescription) {
     fprintf(stderr, "Error(%d): %s\n", errorCode, errorDescription);
 }
+
+void WindowResizeCallBack(GLFWwindow* a_window, int a_width, int a_height)
+{
+    glViewport(0, 0, a_width, a_height);
+    std::cout << "WindowResized :: " << a_width << ", " << a_height << std::endl;
+    // TODO: Do your resize logic here...
+}
+
 
 int Engine::Initialize()
 {
@@ -87,11 +98,14 @@ int Engine::Initialize()
     // Setup callbacks.
 
     // Binds the 'framebuffer_size_callback' method to the window resize event.
-    glfwSetFramebufferSizeCallback(window, WindowResize);
+    glfwSetFramebufferSizeCallback(window, WindowResizeCallBack);
+
+
 
     this->SetupOpenGlRendering();
-
+    this->InitializeSceneObjects();
     this->SetupRenderingData();
+
 
     // Start game loop.
     while(!glfwWindowShouldClose(this->window))
@@ -130,7 +144,7 @@ int Engine::Initialize()
     glBindVertexArray(0);
 
 
-    rendererEntity->ReadyToShutdown();
+    m_rendererEntity->ReadyToShutdown();
 
 
     glfwTerminate();
@@ -138,12 +152,43 @@ int Engine::Initialize()
     return 1;
 }
 
-void WindowResize(GLFWwindow* a_window, int a_width, int a_height)
-{
-    glViewport(0, 0, a_width, a_height);
-    std::cout << "WindowResized :: " << a_width << ", " << a_height << std::endl;
-    // TODO: Do your resize logic here...
+
+void MouseButtonCallback (GLFWwindow* window, int button, int action, int mods) {
+    MouseInput* _mouseInput = Engine::GetInstance()->mouseInput;
+    switch(button) {
+        case GLFW_MOUSE_BUTTON_LEFT: {
+            _mouseInput->UpdateCurrentMouseButtonState(window, action, _mouseInput->leftButton);
+            break;
+        }
+
+        case GLFW_MOUSE_BUTTON_MIDDLE: {
+            _mouseInput->UpdateCurrentMouseButtonState(window, action, _mouseInput->middleButton);
+            break;
+        }
+
+        case GLFW_MOUSE_BUTTON_RIGHT: {
+            _mouseInput->UpdateCurrentMouseButtonState(window, action, _mouseInput->rightButton);
+            break;
+        }
+
+        default: {
+            std::cout << "Unknown Mouse Button" << std::endl;
+            break;
+        }
+    }
 }
+
+void CursorPositionCallback (GLFWwindow* window, double xpos, double ypos) {
+    MouseInput* _mouseInput = Engine::GetInstance()->mouseInput;
+    _mouseInput->UpdateScreenPosition(window);
+
+    if(_mouseInput->rightButton->IsDrag()) {
+        //rotate camera
+        glm::vec2 deltaPosition = _mouseInput->GetScreenDeltaPosition();
+        
+    }
+}
+
 
 void Engine::ProcessInput(GLFWwindow* a_window)
 {
@@ -152,11 +197,25 @@ void Engine::ProcessInput(GLFWwindow* a_window)
     // If the escape key gets pressed, close the window.
     if(glfwGetKey(a_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(a_window, true);
+
+    if(glfwGetKey(a_window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+        m_cameraController->SetPosition(m_cameraController->GetPosition() - glm::vec3(0.1f, 0.0f, 0.0f));
+    }
+
+    if(glfwGetKey(a_window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+        m_cameraController->SetPosition(m_cameraController->GetPosition() + glm::vec3(0.1f, 0.0f, 0.0f));
+    }
+
+
+    glfwSetMouseButtonCallback(window, MouseButtonCallback);
+    glfwSetCursorPosCallback(window, CursorPositionCallback);
+
 }
+
+
 
 void Engine::SetupOpenGlRendering()
 {
-    return;
     // TODO: Setup OpenGL code here...
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
@@ -167,19 +226,27 @@ void Engine::SetupOpenGlRendering()
 }
 
 void Engine::SetupRenderingData () {
-    rendererEntity->SetupRenderingData();
+    m_rendererEntity->SetupRenderingData();
 }
 
+
+void Engine::InitializeSceneObjects () {
+    m_cameraController = new CameraController(glm::vec3(4.0f, 3.0f, 3.0f));
+    m_cameraController->LookAt(glm::vec3(0.0f, 0.0f, 0.0f));
+    m_rendererEntity = new SingleQuadRenderer(m_cameraController->GetMvpMatrix(glm::mat4(1.0f)));
+}
 
 void Engine::Update(float a_deltaTime)
 {
     // TODO: Update your logic here...
+    m_rendererEntity->SetMvpMatrix(m_cameraController->GetMvpMatrix(glm::mat4(1.0f)));
+    m_rendererEntity->Update(a_deltaTime);
 }
 
 void Engine::Draw()
 {
     // TODO: Render your stuff here...
-    rendererEntity->Draw();
+    m_rendererEntity->Draw();
 }
 
 void Engine::Shutdown () {

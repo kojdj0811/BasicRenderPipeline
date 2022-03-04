@@ -1,4 +1,4 @@
-#pragma one
+#pragma once
 
 // System libs.
 #include <iostream>
@@ -13,13 +13,17 @@
 // TODO: Include your headers here...
 #include "shader.h"
 
+#include "camera/cameraController.h"
 #include "common/utility.h"
 #include "common/basicRendererEntity.h"
 #include "common/singleTriangleRenderer.h"
 #include "common/singleQuadRenderer.h"
 
+#include "common/input/mouseInput.h"
+
 // Function prototypes.
 void WindowResize(GLFWwindow* a_window, int a_width, int a_height);
+class CameraController;
 
 // Classes.
 class Engine
@@ -31,6 +35,9 @@ public:
     float gameSpeed = 0.1f;
     int fps = 0;
 
+    MouseInput* mouseInput;
+
+
 private:
     static Engine* m_instance;
     int screenWidth = 800;
@@ -38,7 +45,9 @@ private:
 
     const char* windowName = "Default Name";
 
-    SingleQuadRenderer* rendererEntity;
+
+    CameraController* m_cameraController;
+    SingleQuadRenderer* m_rendererEntity;
 
 
     // Game loop.
@@ -50,6 +59,7 @@ public:
     static Engine* GetInstance ();
 
     int Initialize();
+    void InitializeSceneObjects();
     void Update(float a_deltaTime);
     void Draw();
     void Shutdown();

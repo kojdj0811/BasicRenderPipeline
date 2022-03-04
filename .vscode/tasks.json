@@ -44,6 +44,7 @@
                     "${workspaceRoot}/src/common/basicRendererEntity.cpp",
                     "${workspaceRoot}/src/common/singleTriangleRenderer.cpp",
                     "${workspaceRoot}/src/common/singleQuadRenderer.cpp",
+                    "${workspaceRoot}/src/common/input/mouseInput.cpp",
                     
                     "-g",
                     "--std=c++17",

@@ -1,7 +1,7 @@
 #ifndef __SHADER__
 #define __SHADER__
 
-#pragma one
+#pragma once
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>

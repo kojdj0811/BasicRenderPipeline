@@ -11,3 +11,6 @@ int main()
         std::cin.get();
     }
 }
+
+
+//cf. http://www.opengl-tutorial.org/kr/beginners-tutorials/tutorial-3-matrices/

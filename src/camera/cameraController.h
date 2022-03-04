@@ -15,11 +15,16 @@ class CameraController
 private:
     glm::vec3 m_position;
     // glm::vec3 m_eulerAngles;
+    glm::vec3 m_up;
+    glm::vec3 m_forward;
 
-    glm::mat4 m_projection;
+    glm::vec3 m_worldUp;
+
+
+
+    glm::mat4 m_projectionMatrix;
     glm::mat4 m_viewMatrix;
-    glm::mat4 m_modelMatrix;
-    glm::mat4 m_mvp;
+    // glm::mat4 m_modelMatrix;
 
     float m_fieldOfView = 30.0f;
     float m_ratio;
@@ -30,7 +35,17 @@ public:
 private:
 
 public:
-    CameraController();
+    CameraController(glm::vec3 position);
     ~CameraController();
+
+    glm::vec3 GetPosition();    
+    glm::mat4 GetProjectionMatrix();
+    glm::mat4 GetViewMatrix();
+    glm::mat4 GetMvpMatrix(glm::mat4 modelMatrix);
+
+    void SetPosition (glm::vec3 position);
+    void LookAt (glm::vec3 position);
+
+    glm::vec3 GetLeft();
 };
 

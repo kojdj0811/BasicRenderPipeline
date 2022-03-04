@@ -2,7 +2,11 @@
 
 
 
-SingleQuadRenderer::SingleQuadRenderer() : BasicRendererEntity()
+SingleQuadRenderer::SingleQuadRenderer() : BasicRendererEntity() {
+
+}
+
+SingleQuadRenderer::SingleQuadRenderer(glm::mat4 mvpMatrix) : BasicRendererEntity(mvpMatrix)
 {
 
 }
@@ -61,12 +65,20 @@ void SingleQuadRenderer::SetupRenderingData () {
     glVertexAttribPointer(colorAttribute, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(colorAttribute);
 
+    GLuint mvpUniform = glGetUniformLocation(shaderProgramId, "MVP");
+    glUniformMatrix4fv(mvpUniform, 1, GL_FALSE, &m_mvpMatrix[0][0]);
+
     glBindVertexArray(0);
 
 
 
     shaderProgram->use();
     glBindVertexArray(vertexArrayObject);
+}
+
+void SingleQuadRenderer::Update (float a_deltaTime) {
+    GLuint mvpUniform = glGetUniformLocation(shaderProgramId, "MVP");
+    glUniformMatrix4fv(mvpUniform, 1, GL_FALSE, &m_mvpMatrix[0][0]);
 }
 
 void SingleQuadRenderer::Draw() {

@@ -61,6 +61,9 @@ void SingleTriangleRenderer::SetupRenderingData () {
     glBindVertexArray(vertexArrayObject);
 }
 
+void SingleTriangleRenderer::Update(float a_deltaTime) {
+}
+
 void SingleTriangleRenderer::Draw() {
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glDrawArrays(GL_TRIANGLES, 0, 3);

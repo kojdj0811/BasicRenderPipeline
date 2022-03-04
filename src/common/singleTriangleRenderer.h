@@ -37,6 +37,7 @@ public:
     float* GetVertexColor();
 
     void SetupRenderingData();
+    void Update(float a_deltaTime);
     void Draw();
     void ReadyToShutdown();
 };
