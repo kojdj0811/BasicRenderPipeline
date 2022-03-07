@@ -43,12 +43,12 @@ void SingleTriangleRenderer::SetupRenderingData () {
     glBindVertexArray(vertexArrayObject);
 
 
-    GLuint positionAttribute = glGetAttribLocation(shaderProgramId, "positionAttribute");
+    GLuint positionAttribute = shaderProgram->getAttribLocation("positionAttribute");
     glBindBuffer(GL_ARRAY_BUFFER, vertexPositionBufferObjectId);
     glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(positionAttribute);
 
-    GLuint colorAttribute = glGetAttribLocation(shaderProgramId, "colorAttribute");
+    GLuint colorAttribute = shaderProgram->getAttribLocation("colorAttribute");
     glBindBuffer(GL_ARRAY_BUFFER, vertexColorBufferObjectId);
     glVertexAttribPointer(colorAttribute, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(colorAttribute);

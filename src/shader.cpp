@@ -82,6 +82,12 @@ int Shader::getUniformLocation(std::string a_uniformName)
     return m_location;
 }
 
+int Shader::getAttribLocation(std::string a_uniformName) {
+    int m_location = glGetAttribLocation(this->shaderProgram, a_uniformName.c_str());
+
+    return m_location;
+}
+
 
 void Shader::use()
 {

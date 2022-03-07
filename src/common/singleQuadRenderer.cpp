@@ -2,27 +2,31 @@
 
 
 
-SingleQuadRenderer::SingleQuadRenderer() : BasicRendererEntity() {
-
-}
-
 SingleQuadRenderer::SingleQuadRenderer(glm::mat4 mvpMatrix) : BasicRendererEntity(mvpMatrix)
 {
+    if (m_vertexBuffer != nullptr ||
+        m_vertexColorBuffer != nullptr ||
+        m_indexBuffer != nullptr)
+        return;
 
-}
+    m_vertexBuffer = new GLfloat[12] {
+        0.5f, 0.5f, 0.0f,
+        -0.5f, 0.5f, 0.0f,
+        -0.5f, -0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f
+    };
 
-SingleQuadRenderer::~SingleQuadRenderer()
-{
-}
+    m_vertexColorBuffer = new GLfloat[12] {
+        1.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 1.0f,
+        1.0f, 1.0f, 1.0f
+    };
 
-
-float* SingleQuadRenderer::GetVertexPosition() {
-    return vertexPosition;
-}
-
-
-float* SingleQuadRenderer::GetVertexColor() {
-    return vertexColor;
+    m_indexBuffer = new GLuint[6] {
+        0, 1, 3,
+        3, 1, 2
+    };
 }
 
 
@@ -55,17 +59,17 @@ void SingleQuadRenderer::SetupRenderingData () {
 
 
 
-    GLuint positionAttribute = glGetAttribLocation(shaderProgramId, "positionAttribute");
+    GLuint positionAttribute = shaderProgram->getAttribLocation("positionAttribute");
     glBindBuffer(GL_ARRAY_BUFFER, vertexPositionBufferObjectId);
     glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(positionAttribute);
 
-    GLuint colorAttribute = glGetAttribLocation(shaderProgramId, "colorAttribute");
+    GLuint colorAttribute = shaderProgram->getAttribLocation("colorAttribute");
     glBindBuffer(GL_ARRAY_BUFFER, vertexColorBufferObjectId);
     glVertexAttribPointer(colorAttribute, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(colorAttribute);
 
-    GLuint mvpUniform = glGetUniformLocation(shaderProgramId, "MVP");
+    GLuint mvpUniform = shaderProgram->getUniformLocation("MVP");
     glUniformMatrix4fv(mvpUniform, 1, GL_FALSE, &m_mvpMatrix[0][0]);
 
     glBindVertexArray(0);
@@ -77,7 +81,7 @@ void SingleQuadRenderer::SetupRenderingData () {
 }
 
 void SingleQuadRenderer::Update (float a_deltaTime) {
-    GLuint mvpUniform = glGetUniformLocation(shaderProgramId, "MVP");
+    GLuint mvpUniform = shaderProgram->getUniformLocation("MVP");
     glUniformMatrix4fv(mvpUniform, 1, GL_FALSE, &m_mvpMatrix[0][0]);
 }
 

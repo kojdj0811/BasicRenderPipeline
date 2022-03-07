@@ -8,6 +8,9 @@
 #include "../shader.h"
 
 
+#define SAFE_DELETE(var)    { delete var; var = NULL; }
+
+
 class Utility
 {
 private:

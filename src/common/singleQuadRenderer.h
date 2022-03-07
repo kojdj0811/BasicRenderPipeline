@@ -36,15 +36,11 @@ private:
 
 
 public:
-    SingleQuadRenderer();
-    SingleQuadRenderer(glm::mat4 mvpMatrix);
-    ~SingleQuadRenderer();
+    SingleQuadRenderer (glm::mat4 mvpMatrix);
+    ~SingleQuadRenderer () {}
 
-    float* GetVertexPosition();
-    float* GetVertexColor();
-
-    void SetupRenderingData();
-    void Update(float a_deltaTime);
-    void Draw();
-    void ReadyToShutdown();
+    void SetupRenderingData ();
+    void Update (float a_deltaTime);
+    void Draw ();
+    void ReadyToShutdown ();
 };

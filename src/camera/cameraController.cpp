@@ -66,7 +66,3 @@ void CameraController::LookAt (glm::vec3 target) {
 
     m_forward = glm::normalize(target - m_position);
 }
-
-// glm::vec3 GetLeft() {
-//     return m_viewMatrix
-// }

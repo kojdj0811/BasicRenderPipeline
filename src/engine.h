@@ -56,6 +56,7 @@ private:
 
 public:
     Engine(int a_width, int a_height, const char* a_windowName);
+    ~Engine();
     static Engine* GetInstance ();
 
     int Initialize();

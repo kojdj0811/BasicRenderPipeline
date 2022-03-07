@@ -10,8 +10,6 @@ Utility::Utility()
 
 Utility::~Utility()
 {
-    if(m_instance != nullptr)
-        delete m_instance;
 }
 
 

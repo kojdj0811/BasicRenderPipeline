@@ -14,6 +14,14 @@ Engine::Engine(int a_width, int a_height, const char* a_windowName)
     m_instance = this;
 }
 
+Engine::~Engine () {
+    SAFE_DELETE(mouseInput);
+    SAFE_DELETE(m_cameraController);
+    SAFE_DELETE(m_rendererEntity);
+    printf("Engine is shutdown\n");
+}
+
+
 Engine* Engine::GetInstance () {
     return m_instance;
 }
@@ -118,7 +126,7 @@ int Engine::Initialize()
 
         fps++;
         if(m_frameTime - lastFpsTime >= 1.0f) {
-            printf("%f ms/frame %d fps\n", 1000.0/fps, fps);
+            fprintf(stderr, "%.4f ms/frame %d fps\n", 1000.0/fps, fps);
             fps = 0;
             lastFpsTime = m_frameTime;
         }
