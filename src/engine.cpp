@@ -209,7 +209,6 @@ void Engine::ProcessInput(GLFWwindow* a_window)
 
     glfwSetMouseButtonCallback(window, MouseButtonCallback);
     glfwSetCursorPosCallback(window, CursorPositionCallback);
-
 }
 
 
@@ -239,8 +238,9 @@ void Engine::InitializeSceneObjects () {
 void Engine::Update(float a_deltaTime)
 {
     // TODO: Update your logic here...
-    m_rendererEntity->SetMvpMatrix(m_cameraController->GetMvpMatrix(glm::mat4(1.0f)));
     m_rendererEntity->Update(a_deltaTime);
+
+    m_rendererEntity->SetMvpMatrix(m_cameraController->GetMvpMatrix(glm::mat4(1.0f)));
 }
 
 void Engine::Draw()

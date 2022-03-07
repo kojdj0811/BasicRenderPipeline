@@ -21,7 +21,7 @@ CameraController::CameraController(glm::vec3 position)
     m_position = position;
     m_worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
     m_up = glm::vec3(0.0f, 1.0f, 0.0f);
-    m_forward = glm::vec3(0.0f, 0.0f, 1.0f);
+    m_forward = glm::vec3(0.0f, 0.0f, -1.0f);
 
 
     LookAt(m_position + m_forward);
@@ -50,12 +50,9 @@ glm::mat4 CameraController::GetMvpMatrix (glm::mat4 modelMatrix) {
 
 void CameraController::SetPosition (glm::vec3 position) {
     m_viewMatrix = glm::translate(glm::mat4(), position - m_position) * m_viewMatrix;
-
-    LookAt(glm::vec3(0.0f, 0.0f, 0.0f));
-
-    fprintf(stderr, "(%f, %f, %f) > (%f, %f, %f)\n", m_position.x, m_position.y, m_position.z, position.x, position.y, position.z);
-
     m_position = position;
+
+    LookAt(m_position + m_forward);
 }
 
 
@@ -67,7 +64,6 @@ void CameraController::LookAt (glm::vec3 target) {
         m_worldUp
     );
 
-// setup m_forward, m_up
     m_forward = glm::normalize(target - m_position);
 }
 
