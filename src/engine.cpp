@@ -34,8 +34,21 @@ void Engine::errorCallback (int errorCode, const char* errorDescription) {
 void WindowResizeCallBack(GLFWwindow* a_window, int a_width, int a_height)
 {
     glViewport(0, 0, a_width, a_height);
-    std::cout << "WindowResized :: " << a_width << ", " << a_height << std::endl;
+    fprintf(stderr, "WindowResized :: (%d, %d)\n", a_width, a_height);
     // TODO: Do your resize logic here...
+}
+
+void Engine::InitializeUiSystem() {
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+
+    // ImGui::StyleColorsDark();
+    ImGui::StyleColorsClassic();
+
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 330");
 }
 
 
@@ -108,7 +121,7 @@ int Engine::Initialize()
     // Binds the 'framebuffer_size_callback' method to the window resize event.
     glfwSetFramebufferSizeCallback(window, WindowResizeCallBack);
 
-
+    this->InitializeUiSystem();
 
     this->SetupOpenGlRendering();
     this->InitializeSceneObjects();
@@ -132,6 +145,9 @@ int Engine::Initialize()
         }
 
 
+
+
+
         glfwPollEvents();
         this->ProcessInput(this->window);
 
@@ -141,6 +157,8 @@ int Engine::Initialize()
         // Application logic
         this->Update(m_deltaTime);
         this->Draw();
+
+        this->UpdateUiSystem();
 
         glfwSwapBuffers(this->window);
     }
@@ -153,7 +171,7 @@ int Engine::Initialize()
 
 
     m_rendererEntity->ReadyToShutdown();
-
+    this->Shutdown();
 
     glfwTerminate();
 
@@ -162,6 +180,8 @@ int Engine::Initialize()
 
 
 void MouseButtonCallback (GLFWwindow* window, int button, int action, int mods) {
+    ImGui_ImplGlfw_MouseButtonCallback(window, button, action, mods);
+
     MouseInput* _mouseInput = Engine::GetInstance()->mouseInput;
     switch(button) {
         case GLFW_MOUSE_BUTTON_LEFT: {
@@ -180,13 +200,15 @@ void MouseButtonCallback (GLFWwindow* window, int button, int action, int mods) 
         }
 
         default: {
-            std::cout << "Unknown Mouse Button" << std::endl;
+            fprintf(stderr, "Unknown Mouse Button\n");
             break;
         }
     }
 }
 
 void CursorPositionCallback (GLFWwindow* window, double xpos, double ypos) {
+    ImGui_ImplGlfw_CursorPosCallback(window, xpos, ypos);
+
     MouseInput* _mouseInput = Engine::GetInstance()->mouseInput;
     _mouseInput->UpdateScreenPosition(window);
 
@@ -214,9 +236,18 @@ void Engine::ProcessInput(GLFWwindow* a_window)
         m_cameraController->SetPosition(m_cameraController->GetPosition() + glm::vec3(0.1f, 0.0f, 0.0f));
     }
 
+    glfwSetWindowFocusCallback(window, ImGui_ImplGlfw_WindowFocusCallback);
+    glfwSetCursorEnterCallback(window, ImGui_ImplGlfw_CursorEnterCallback);
+    // glfwSetCursorPosCallback(window, ImGui_ImplGlfw_CursorPosCallback);
+    // glfwSetMouseButtonCallback(window, ImGui_ImplGlfw_MouseButtonCallback);
+    glfwSetScrollCallback(window, ImGui_ImplGlfw_ScrollCallback);
+    glfwSetKeyCallback(window, ImGui_ImplGlfw_KeyCallback);
+    glfwSetCharCallback(window, ImGui_ImplGlfw_CharCallback);
+    glfwSetMonitorCallback(ImGui_ImplGlfw_MonitorCallback);
 
-    glfwSetMouseButtonCallback(window, MouseButtonCallback);
+
     glfwSetCursorPosCallback(window, CursorPositionCallback);
+    glfwSetMouseButtonCallback(window, MouseButtonCallback);
 }
 
 
@@ -251,6 +282,27 @@ void Engine::Update(float a_deltaTime)
     m_rendererEntity->SetMvpMatrix(m_cameraController->GetMvpMatrix(glm::mat4(1.0f)));
 }
 
+void Engine::UpdateUiSystem() {
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    ImGui::ShowDemoWindow();
+
+    // ImGui::Begin("Test"); {
+    //     static float a = 0.0f;
+    //     ImGui::SliderAngle("Angle", &a);
+    // } ImGui::End();
+
+    ImGui::Begin("Demo window");
+    ImGui::Button("Hello!");
+    ImGui::End();
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+
 void Engine::Draw()
 {
     // TODO: Render your stuff here...
@@ -258,7 +310,9 @@ void Engine::Draw()
 }
 
 void Engine::Shutdown () {
-    
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 }
 
 

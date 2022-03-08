@@ -33,22 +33,22 @@ SingleQuadRenderer::SingleQuadRenderer(glm::mat4 mvpMatrix) : BasicRendererEntit
 
 void SingleQuadRenderer::SetupRenderingData () {
     //define shader
-    shaderProgram->setVertexShader("src/shaders/simpleVertexShader.glsl");
-    shaderProgram->setFragmentShader("src/shaders/simpleFragmentShader.glsl");
-    shaderProgramId = shaderProgram->compile();
+    m_shaderProgram->setVertexShader("src/shaders/simpleVertexShader.glsl");
+    m_shaderProgram->setFragmentShader("src/shaders/simpleFragmentShader.glsl");
+    m_shaderProgramId = m_shaderProgram->compile();
 
     //setup quad data
-    glGenBuffers(1, &vertexPositionBufferObjectId);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexPositionBufferObjectId);
+    glGenBuffers(1, &m_vertexPositionBufferObjectId);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vertexPositionBufferObjectId);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertexPosition), vertexPosition, GL_STATIC_DRAW);
 
-    glGenBuffers(1, &vertexColorBufferObjectId);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexColorBufferObjectId);
+    glGenBuffers(1, &m_vertexColorBufferObjectId);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vertexColorBufferObjectId);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertexColor), vertexColor, GL_STATIC_DRAW);
 
     //use activate
-    glGenVertexArrays(1, &vertexArrayObject);
-    glBindVertexArray(vertexArrayObject);
+    glGenVertexArrays(1, &m_vertexArrayObject);
+    glBindVertexArray(m_vertexArrayObject);
 
     //element buffer
     GLuint elementBufferObject;
@@ -59,29 +59,29 @@ void SingleQuadRenderer::SetupRenderingData () {
 
 
 
-    GLuint positionAttribute = shaderProgram->getAttribLocation("positionAttribute");
-    glBindBuffer(GL_ARRAY_BUFFER, vertexPositionBufferObjectId);
+    GLuint positionAttribute = m_shaderProgram->getAttribLocation("positionAttribute");
+    glBindBuffer(GL_ARRAY_BUFFER, m_vertexPositionBufferObjectId);
     glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(positionAttribute);
 
-    GLuint colorAttribute = shaderProgram->getAttribLocation("colorAttribute");
-    glBindBuffer(GL_ARRAY_BUFFER, vertexColorBufferObjectId);
+    GLuint colorAttribute = m_shaderProgram->getAttribLocation("colorAttribute");
+    glBindBuffer(GL_ARRAY_BUFFER, m_vertexColorBufferObjectId);
     glVertexAttribPointer(colorAttribute, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(colorAttribute);
 
-    GLuint mvpUniform = shaderProgram->getUniformLocation("MVP");
+    GLuint mvpUniform = m_shaderProgram->getUniformLocation("MVP");
     glUniformMatrix4fv(mvpUniform, 1, GL_FALSE, &m_mvpMatrix[0][0]);
 
     glBindVertexArray(0);
 
 
 
-    shaderProgram->use();
-    glBindVertexArray(vertexArrayObject);
+    m_shaderProgram->use();
+    glBindVertexArray(m_vertexArrayObject);
 }
 
 void SingleQuadRenderer::Update (float a_deltaTime) {
-    GLuint mvpUniform = shaderProgram->getUniformLocation("MVP");
+    GLuint mvpUniform = m_shaderProgram->getUniformLocation("MVP");
     glUniformMatrix4fv(mvpUniform, 1, GL_FALSE, &m_mvpMatrix[0][0]);
 }
 
@@ -92,8 +92,8 @@ void SingleQuadRenderer::Draw() {
 }
 
 void SingleQuadRenderer::ReadyToShutdown () {
-    glDeleteProgram(shaderProgramId);
-    glDeleteBuffers(1, &vertexPositionBufferObjectId);
-    glDeleteBuffers(1, &vertexColorBufferObjectId);
-    glDeleteVertexArrays(1, &vertexArrayObject);
+    glDeleteProgram(m_shaderProgramId);
+    glDeleteBuffers(1, &m_vertexPositionBufferObjectId);
+    glDeleteBuffers(1, &m_vertexColorBufferObjectId);
+    glDeleteVertexArrays(1, &m_vertexArrayObject);
 }

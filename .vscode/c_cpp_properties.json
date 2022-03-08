@@ -6,7 +6,9 @@
                 "${workspaceFolder}",
                 "${workspaceFolder}/dependencies/GLFW/include",
                 "${workspaceFolder}/dependencies/GLAD/include",
-                "${workspaceFolder}/dependencies/GLM"
+                "${workspaceFolder}/dependencies/GLM",
+                "${workspaceFolder}/dependencies/IMGUI",
+                "${workspaceFolder}/dependencies/IMGUI/imgui"
             ],
             "defines": [
                 "_DEBUG",

@@ -4,10 +4,17 @@
 #include <iostream>
 
 // Include libs.
+#include <imgui.h>
+#include <imgui/backends/imgui_impl_glfw.h>
+#include <imgui/backends/imgui_impl_opengl3.h>
+
+
 #include <glad\glad.h>
 #include <GLFW\glfw3.h>
 
 #include <glm/glm.hpp>
+
+
 
 // Header includes.
 // TODO: Include your headers here...
@@ -62,6 +69,7 @@ public:
     int Initialize();
     void InitializeSceneObjects();
     void Update(float a_deltaTime);
+    void UpdateUiSystem();
     void Draw();
     void Shutdown();
 
@@ -72,6 +80,7 @@ public:
 
 private:
     // OpenGL
+    void InitializeUiSystem();
     void SetupOpenGlRendering();
 
 private:
