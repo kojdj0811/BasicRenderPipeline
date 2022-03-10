@@ -287,16 +287,57 @@ void Engine::UpdateUiSystem() {
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    ImGui::ShowDemoWindow();
+    // ImGui::ShowDemoWindow();
+    ImGui::ShowMetricsWindow();
+    // ImGui::ShowUserGuide();
+    // ImGui::GetVersion();
 
-    // ImGui::Begin("Test"); {
-    //     static float a = 0.0f;
-    //     ImGui::SliderAngle("Angle", &a);
-    // } ImGui::End();
+    ImGui::Begin("My Window");
+    static ImGuiTableFlags flags = ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable;
 
-    ImGui::Begin("Demo window");
-    ImGui::Button("Hello!");
+    if (ImGui::BeginTable("Camera View Matrix", 4, flags))
+    {
+        ImGui::TableSetupColumn("(0, n)", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("(1, n)", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("(2, n)", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("(3, n)", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableHeadersRow();
+        glm::mat4 cameraViewMatrix = m_cameraController->GetViewMatrix();
+        for (int row = 0; row < 4; row++)
+        {
+            ImGui::TableNextRow();
+            for (int column = 0; column < 4; column++)
+            {
+                ImGui::TableSetColumnIndex(column);
+                // ImGui::Text("(%d,%d) %f", column, row, cameraViewMatrix[column][row]);
+                ImGui::Text("%f", cameraViewMatrix[column][row]);
+            }
+        }
+        ImGui::EndTable();
+    }
+    if (ImGui::BeginTable("table2", 6, flags))
+    {
+        ImGui::TableSetupColumn("AAA", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableSetupColumn("BBB", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableSetupColumn("CCC", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_DefaultHide);
+        ImGui::TableSetupColumn("DDD", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("EEE", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("FFF", ImGuiTableColumnFlags_WidthStretch | ImGuiTableColumnFlags_DefaultHide);
+        ImGui::TableHeadersRow();
+        for (int row = 0; row < 5; row++)
+        {
+            ImGui::TableNextRow();
+            for (int column = 0; column < 6; column++)
+            {
+                ImGui::TableSetColumnIndex(column);
+                ImGui::Text("%d,%d", column, row);
+            }
+        }
+        ImGui::EndTable();
+    }
     ImGui::End();
+
+
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
